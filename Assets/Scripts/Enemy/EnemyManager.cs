@@ -6,13 +6,11 @@ namespace ShootEmUp
 {
     public sealed class EnemyManager : MonoBehaviour
     {
-        [SerializeField]
-        private EnemyPool _enemyPool;
-
-        [SerializeField]
-        private BulletSystem _bulletSystem;
+        [SerializeField] private EnemyPool _enemyPool;
+        [SerializeField] private BulletsController _bulletsController;
+        [SerializeField] private BulletConfig _bulletConfig;
         
-        private readonly HashSet<GameObject> m_activeEnemies = new();
+        private readonly HashSet<GameObject> _activeEnemies = new();
 
         private IEnumerator Start()
         {
@@ -22,7 +20,7 @@ namespace ShootEmUp
                 var enemy = this._enemyPool.SpawnEnemy();
                 if (enemy != null)
                 {
-                    if (this.m_activeEnemies.Add(enemy))
+                    if (this._activeEnemies.Add(enemy))
                     {
                         enemy.GetComponent<HitPointsComponent>().hpEmpty += this.OnDestroyed;
                         enemy.GetComponent<EnemyAttackAgent>().OnFire += this.OnFire;
@@ -33,7 +31,7 @@ namespace ShootEmUp
 
         private void OnDestroyed(GameObject enemy)
         {
-            if (m_activeEnemies.Remove(enemy))
+            if (_activeEnemies.Remove(enemy))
             {
                 enemy.GetComponent<HitPointsComponent>().hpEmpty -= this.OnDestroyed;
                 enemy.GetComponent<EnemyAttackAgent>().OnFire -= this.OnFire;
@@ -42,17 +40,9 @@ namespace ShootEmUp
             }
         }
 
-        private void OnFire(GameObject enemy, Vector2 position, Vector2 direction)
+        private void OnFire(Vector2 position, Vector2 direction)
         {
-            _bulletSystem.FlyBulletByArgs(new BulletSystem.Args
-            {
-                isPlayer = false,
-                physicsLayer = (int) PhysicsLayer.ENEMY,
-                color = Color.red,
-                damage = 1,
-                position = position,
-                velocity = direction * 2.0f
-            });
+            _bulletsController.SetupBullet(position, direction, _bulletConfig);
         }
     }
 }

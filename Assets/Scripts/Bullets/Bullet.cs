@@ -5,40 +5,62 @@ namespace ShootEmUp
 {
     public sealed class Bullet : MonoBehaviour
     {
-        public event Action<Bullet, Collision2D> OnCollisionEntered;
-
-        [NonSerialized] public bool isPlayer;
-        [NonSerialized] public int damage;
-
-        [SerializeField]
-        private new Rigidbody2D rigidbody2D;
-
-        [SerializeField]
-        private SpriteRenderer spriteRenderer;
+        public event Action<Bullet> OnCollisionEntered;
+        
+        [SerializeField] private Rigidbody2D _rigidbody2D;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        
+        private bool _isPlayer;
+        private int _damage;
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            this.OnCollisionEntered?.Invoke(this, collision);
-        }
+            if (!collision.gameObject.TryGetComponent(out TeamComponent team))
+            {
+                return;
+            }
 
-        public void SetVelocity(Vector2 velocity)
-        {
-            this.rigidbody2D.velocity = velocity;
-        }
+            if (_isPlayer == team.IsPlayer)
+            {
+                return;
+            }
 
-        public void SetPhysicsLayer(int physicsLayer)
-        {
-            this.gameObject.layer = physicsLayer;
+            if (collision.gameObject.TryGetComponent(out HitPointsComponent hitPoints))
+            {
+                hitPoints.TakeDamage(_damage);
+            }
+            
+            this.OnCollisionEntered?.Invoke(this);
         }
 
         public void SetPosition(Vector3 position)
         {
             this.transform.position = position;
         }
+        
+        public void SetVelocity(Vector2 velocity)
+        {
+            this._rigidbody2D.velocity = velocity;
+        }
 
         public void SetColor(Color color)
         {
-            this.spriteRenderer.color = color;
+            this._spriteRenderer.color = color;
+        }
+        
+        public void SetPhysicsLayer(int physicsLayer)
+        {
+            this.gameObject.layer = physicsLayer;
+        }
+
+        public void SetDamage(int damage)
+        {
+            this._damage = damage;
+        }
+        
+        public void SetPlayerTeam(bool isPlayer)
+        {
+            this._isPlayer = isPlayer;
         }
     }
 }

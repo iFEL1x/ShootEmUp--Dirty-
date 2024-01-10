@@ -4,46 +4,44 @@ namespace ShootEmUp
 {
     public sealed class CharacterController : MonoBehaviour
     {
-        [SerializeField] private GameObject character; 
-        [SerializeField] private GameManager gameManager;
-        [SerializeField] private BulletSystem _bulletSystem;
+        public bool FireRequired { get; set; }
+
+        [SerializeField] private GameObject _character; 
+        [SerializeField] private WeaponComponent _weaponComponent; 
+        [SerializeField] private GameManager _gameManager;
+        [SerializeField] private BulletsController _bulletsController;
         [SerializeField] private BulletConfig _bulletConfig;
         
-        public bool _fireRequired;
-
         private void OnEnable()
         {
-            this.character.GetComponent<HitPointsComponent>().hpEmpty += this.OnCharacterDeath;
+            this._character.GetComponent<HitPointsComponent>().hpEmpty += this.OnCharacterDeath;
         }
 
         private void OnDisable()
         {
-            this.character.GetComponent<HitPointsComponent>().hpEmpty -= this.OnCharacterDeath;
+            this._character.GetComponent<HitPointsComponent>().hpEmpty -= this.OnCharacterDeath;
         }
-
-        private void OnCharacterDeath(GameObject _) => this.gameManager.FinishGame();
-
+        
         private void FixedUpdate()
         {
-            if (this._fireRequired)
+            if (this.FireRequired)
             {
-                this.OnFlyBullet();
-                this._fireRequired = false;
+                this.OnFire();
+                this.FireRequired = false;
             }
         }
-
-        private void OnFlyBullet()
+        
+        private void OnCharacterDeath(GameObject _)
         {
-            var weapon = this.character.GetComponent<WeaponComponent>();
-            _bulletSystem.FlyBulletByArgs(new BulletSystem.Args
-            {
-                isPlayer = true,
-                physicsLayer = (int) this._bulletConfig.physicsLayer,
-                color = this._bulletConfig.color,
-                damage = this._bulletConfig.damage,
-                position = weapon.Position,
-                velocity = weapon.Rotation * Vector3.up * this._bulletConfig.speed
-            });
+            this._gameManager.FinishGame();
+        }
+
+        private void OnFire()
+        {
+            var position = _weaponComponent.Position;
+            var direction = _weaponComponent.Rotation * Vector2.up;
+            
+            _bulletsController.SetupBullet(position, direction, _bulletConfig);
         }
     }
 }
