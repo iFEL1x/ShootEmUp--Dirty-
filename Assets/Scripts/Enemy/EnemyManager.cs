@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,43 +5,38 @@ namespace ShootEmUp
 {
     public sealed class EnemyManager : MonoBehaviour
     {
+        [SerializeField] private EnemySpawnPositions _enemySpawnPositions;
+        [SerializeField] private GameObject _character;
         [SerializeField] private EnemyPool _enemyPool;
-        [SerializeField] private BulletsController _bulletsController;
-        [SerializeField] private BulletConfig _bulletConfig;
         
         private readonly HashSet<GameObject> _activeEnemies = new();
 
-        private IEnumerator Start()
+
+        public void SpawnEnemy()
         {
-            while (true)
+            var enemy = this._enemyPool.Release();
+            
+            var spawnPosition = this._enemySpawnPositions.RandomSpawnPosition();
+            enemy.transform.position = spawnPosition.position;
+            
+            var attackPosition = this._enemySpawnPositions.RandomAttackPosition();
+            enemy.GetComponent<EnemyMoveAgent>().SetDestination(attackPosition.position);
+
+            enemy.GetComponent<EnemyAttackAgent>().SetTarget(this._character);
+            if (this._activeEnemies.Add(enemy))
             {
-                yield return new WaitForSeconds(1);
-                var enemy = this._enemyPool.SpawnEnemy();
-                if (enemy != null)
-                {
-                    if (this._activeEnemies.Add(enemy))
-                    {
-                        enemy.GetComponent<HitPointsComponent>().hpEmpty += this.OnDestroyed;
-                        enemy.GetComponent<EnemyAttackAgent>().OnFire += this.OnFire;
-                    }    
-                }
-            }
+                enemy.GetComponent<HitPointsComponent>().OnHpEmpty += this.OnDestroyed;
+            } 
         }
 
         private void OnDestroyed(GameObject enemy)
         {
             if (_activeEnemies.Remove(enemy))
             {
-                enemy.GetComponent<HitPointsComponent>().hpEmpty -= this.OnDestroyed;
-                enemy.GetComponent<EnemyAttackAgent>().OnFire -= this.OnFire;
+                enemy.GetComponent<HitPointsComponent>().OnHpEmpty -= this.OnDestroyed;
 
-                _enemyPool.UnspawnEnemy(enemy);
+                this._enemyPool.Release(enemy);
             }
-        }
-
-        private void OnFire(Vector2 position, Vector2 direction)
-        {
-            _bulletsController.SetupBullet(position, direction, _bulletConfig);
         }
     }
 }

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f607d62c36cf429b98fd5e0d29773f70, type: 3}
   m_Name: PlayerBullet
   m_EditorClassIdentifier: 
-  PhysicsLayer: 14
-  Color: {r: 0.3499779, g: 0.8862745, b: 0.29512942, a: 1}
-  Damage: 1
-  Speed: 3
-  IsPlayer: 1
+  <PhysicsLayer>k__BackingField: 14
+  <Damage>k__BackingField: 1
+  <Speed>k__BackingField: 4
+  <IsPlayer>k__BackingField: 1
+  <Color>k__BackingField: {r: 0.26644853, g: 0.7735849, b: 0.09852261, a: 1}

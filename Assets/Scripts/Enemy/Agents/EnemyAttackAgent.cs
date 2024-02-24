@@ -4,12 +4,10 @@ namespace ShootEmUp
 {
     public sealed class EnemyAttackAgent : MonoBehaviour
     {
-        public delegate void FireHandler(Vector2 position, Vector2 direction);
-
-        public event FireHandler OnFire;
-
         [SerializeField] private WeaponComponent _weaponComponent;
         [SerializeField] private EnemyMoveAgent _moveAgent;
+        [SerializeField] private BulletSystem _bulletsSystem;
+        [SerializeField] private BulletConfig _bulletConfig;
         [SerializeField] private float _countdown;
 
         private GameObject _target;
@@ -50,7 +48,13 @@ namespace ShootEmUp
             var startPosition = this._weaponComponent.Position;
             var vector = (Vector2) this._target.transform.position - startPosition;
             var direction = vector.normalized;
-            this.OnFire?.Invoke(startPosition, direction);
+            
+            _bulletsSystem.SpawnBullet(startPosition, direction, this._bulletConfig);
+        }
+
+        public void SetBulletSystem(BulletSystem system)
+        {
+            this._bulletsSystem = system;
         }
     }
 }

@@ -20,14 +20,14 @@ namespace ShootEmUp
                 return;
             }
 
-            if (_isPlayer == team.IsPlayer)
+            if (this._isPlayer == team.IsPlayer)
             {
                 return;
             }
 
             if (collision.gameObject.TryGetComponent(out HitPointsComponent hitPoints))
             {
-                hitPoints.TakeDamage(_damage);
+                hitPoints.TakeDamage(this._damage);
             }
             
             this.OnCollisionEntered?.Invoke(this);
@@ -61,6 +61,26 @@ namespace ShootEmUp
         public void SetPlayerTeam(bool isPlayer)
         {
             this._isPlayer = isPlayer;
+        }
+
+        public void SetArgs(Vector2 position, Vector2 direction, BulletConfig bulletConfig)
+        {
+            BulletArgs args = new()
+            {
+                Position = position,
+                Velocity = direction * bulletConfig.Speed,
+                Color = bulletConfig.Color,
+                PhysicsLayer = (int) bulletConfig.PhysicsLayer,
+                Damage = bulletConfig.Damage,
+                IsPlayer = bulletConfig.IsPlayer
+            };
+            
+            SetPosition(args.Position); 
+            SetVelocity(args.Velocity);
+            SetColor(args.Color);
+            SetPhysicsLayer(args.PhysicsLayer);
+            SetDamage(args.Damage);
+            SetPlayerTeam(args.IsPlayer);
         }
     }
 }
