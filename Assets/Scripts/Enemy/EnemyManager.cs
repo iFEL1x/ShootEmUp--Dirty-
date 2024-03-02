@@ -14,7 +14,7 @@ namespace ShootEmUp
 
         public void SpawnEnemy()
         {
-            var enemy = this._enemyPool.Release();
+            var enemy = this._enemyPool.Get();
             
             var spawnPosition = this._enemySpawnPositions.RandomSpawnPosition();
             enemy.transform.position = spawnPosition.position;

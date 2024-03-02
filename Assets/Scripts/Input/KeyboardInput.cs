@@ -12,7 +12,7 @@ namespace ShootEmUp
         private void Update()
         {
             if(Input.GetKey(KeyCode.Space))
-                OnFire.Invoke();;
+                OnFire?.Invoke();
 
             HorizontalMove = Input.GetAxisRaw("Horizontal");
             OnMove?.Invoke(HorizontalMove);

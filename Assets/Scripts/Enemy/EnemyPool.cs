@@ -11,13 +11,13 @@ namespace ShootEmUp
         [SerializeField] private Transform _container;
         [SerializeField] private GameObject _prefab;
         [SerializeField] private BulletSystem _bulletSystem;
-        [SerializeField] private int poolSize = 7;
+        [SerializeField] private int _poolSize = 7;
 
         private readonly Queue<GameObject> _enemyPool = new();
         
         private void Awake()
         {
-            for (var i = 0; i < this.poolSize; i++)
+            for (var i = 0; i < this._poolSize; i++)
             {
                 var enemy = Instantiate(this._prefab, this._container);
                     this._enemyPool.Enqueue(enemy);
@@ -36,7 +36,7 @@ namespace ShootEmUp
             return enemy;
         }*/
 
-        public GameObject Release()
+        public GameObject Get()
         {
             if (!this._enemyPool.TryDequeue(out var enemy))
             {

@@ -4,7 +4,7 @@ namespace ShootEmUp
 {
     public sealed class LevelBackground : MonoBehaviour
     {
-        [SerializeField] private LevelBackgroundParams levelBackgroundParams;
+        [SerializeField] private LevelBackgroundParams _levelBackgroundParams;
         
         private float _startPositionY;
         private float _endPositionY;
@@ -15,9 +15,9 @@ namespace ShootEmUp
         
         private void Awake()
         {
-            this._startPositionY = this.levelBackgroundParams.StartPositionY;
-            this._endPositionY = this.levelBackgroundParams.EndPositionY;
-            this._movingSpeedY = this.levelBackgroundParams.MovingSpeedY;
+            this._startPositionY = this._levelBackgroundParams.StartPositionY;
+            this._endPositionY = this._levelBackgroundParams.EndPositionY;
+            this._movingSpeedY = this._levelBackgroundParams.MovingSpeedY;
             this._myTransform = this.transform;
             
             var position = this._myTransform.position;

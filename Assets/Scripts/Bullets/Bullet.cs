@@ -33,36 +33,6 @@ namespace ShootEmUp
             this.OnCollisionEntered?.Invoke(this);
         }
 
-        public void SetPosition(Vector3 position)
-        {
-            this.transform.position = position;
-        }
-        
-        public void SetVelocity(Vector2 velocity)
-        {
-            this._rigidbody2D.velocity = velocity;
-        }
-
-        public void SetColor(Color color)
-        {
-            this._spriteRenderer.color = color;
-        }
-        
-        public void SetPhysicsLayer(int physicsLayer)
-        {
-            this.gameObject.layer = physicsLayer;
-        }
-
-        public void SetDamage(int damage)
-        {
-            this._damage = damage;
-        }
-        
-        public void SetPlayerTeam(bool isPlayer)
-        {
-            this._isPlayer = isPlayer;
-        }
-
         public void SetArgs(Vector2 position, Vector2 direction, BulletConfig bulletConfig)
         {
             BulletArgs args = new()
@@ -75,12 +45,12 @@ namespace ShootEmUp
                 IsPlayer = bulletConfig.IsPlayer
             };
             
-            SetPosition(args.Position); 
-            SetVelocity(args.Velocity);
-            SetColor(args.Color);
-            SetPhysicsLayer(args.PhysicsLayer);
-            SetDamage(args.Damage);
-            SetPlayerTeam(args.IsPlayer);
+            this.transform.position = args.Position;
+            this._rigidbody2D.velocity = args.Velocity;
+            this._spriteRenderer.color = args.Color;
+            this.gameObject.layer = args.PhysicsLayer;
+            this._damage = args.Damage;
+            this._isPlayer = args.IsPlayer;
         }
     }
 }
